@@ -1,0 +1,28 @@
+--cpu Cortex-M3
+"efeed_usart_master\startup_stm32f103xb.o"
+"efeed_usart_master\buttons.o"
+"efeed_usart_master\fonts2.o"
+"efeed_usart_master\i2c_interface.o"
+"efeed_usart_master\nuts_bolts.o"
+"efeed_usart_master\screen.o"
+"efeed_usart_master\ssd1306.o"
+"efeed_usart_master\fsm.o"
+"efeed_usart_master\main.o"
+"efeed_usart_master\stm32f1xx_it.o"
+"efeed_usart_master\stm32f1xx_ll_gpio.o"
+"efeed_usart_master\stm32f1xx_ll_adc.o"
+"efeed_usart_master\stm32f1xx_ll_dma.o"
+"efeed_usart_master\stm32f1xx_ll_rcc.o"
+"efeed_usart_master\stm32f1xx_ll_utils.o"
+"efeed_usart_master\stm32f1xx_ll_exti.o"
+"efeed_usart_master\stm32f1xx_ll_crc.o"
+"efeed_usart_master\stm32f1xx_ll_i2c.o"
+"efeed_usart_master\stm32f1xx_ll_spi.o"
+"efeed_usart_master\stm32f1xx_ll_pwr.o"
+"efeed_usart_master\stm32f1xx_ll_tim.o"
+"efeed_usart_master\stm32f1xx_ll_usart.o"
+"efeed_usart_master\system_stm32f1xx.o"
+--library_type=microlib --strict --scatter "efeed_usart_master\efeed_usart_master.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "efeed_usart_master.map" -o efeed_usart_master\efeed_usart_master.axf
