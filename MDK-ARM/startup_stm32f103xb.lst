@@ -462,12 +462,13 @@ ARM Macro Assembler    Page 8
               00000000 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=efeed_usart_master\startup_stm32f103xb.d -oefeed_usart_master\star
-tup_stm32f103xb.o -I.\RTE\_efeed_usart_master -IC:\DEV\Keil_v5\ARM\PACK\ARM\CMS
-IS\5.7.0\CMSIS\Core\Include -IC:\DEV\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\
-Device\Include --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --pr
-edefine="__UVISION_VERSION SETA 529" --predefine="_RTE_ SETA 1" --predefine="ST
-M32F10X_MD SETA 1" --list=startup_stm32f103xb.lst startup_stm32f103xb.s
+ork --depend=efeed_usart_sub_master\startup_stm32f103xb.d -oefeed_usart_sub_mas
+ter\startup_stm32f103xb.o -I.\RTE\_efeed_usart_sub_master -IC:\DEV\Keil_v5\ARM\
+PACK\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\DEV\Keil_v5\ARM\PACK\Keil\STM32F1x
+x_DFP\2.3.0\Device\Include --predefine="__EVAL SETA 1" --predefine="__MICROLIB 
+SETA 1" --predefine="__UVISION_VERSION SETA 529" --predefine="_RTE_ SETA 1" --p
+redefine="STM32F10X_MD SETA 1" --list=startup_stm32f103xb.lst startup_stm32f103
+xb.s
 
 
 

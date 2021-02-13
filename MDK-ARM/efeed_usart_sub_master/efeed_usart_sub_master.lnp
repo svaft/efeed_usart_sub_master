@@ -1,0 +1,18 @@
+--cpu Cortex-M3
+"efeed_usart_sub_master\startup_stm32f103xb.o"
+"efeed_usart_sub_master\main.o"
+"efeed_usart_sub_master\stm32f1xx_it.o"
+"efeed_usart_sub_master\stm32f1xx_ll_gpio.o"
+"efeed_usart_sub_master\stm32f1xx_ll_crc.o"
+"efeed_usart_sub_master\stm32f1xx_ll_rcc.o"
+"efeed_usart_sub_master\stm32f1xx_ll_utils.o"
+"efeed_usart_sub_master\stm32f1xx_ll_exti.o"
+"efeed_usart_sub_master\stm32f1xx_ll_pwr.o"
+"efeed_usart_sub_master\stm32f1xx_ll_tim.o"
+"efeed_usart_sub_master\stm32f1xx_ll_dma.o"
+"efeed_usart_sub_master\stm32f1xx_ll_usart.o"
+"efeed_usart_sub_master\system_stm32f1xx.o"
+--library_type=microlib --strict --scatter "efeed_usart_sub_master\efeed_usart_sub_master.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "efeed_usart_sub_master.map" -o efeed_usart_sub_master\efeed_usart_sub_master.axf
