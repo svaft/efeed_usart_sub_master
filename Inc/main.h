@@ -88,9 +88,14 @@ extern "C" {
 extern uint8_t Menu_Step;																					// выборка из массива по умолчанию (1.5mm)
 extern bool menu_changed;
 extern bool jog;
-extern int32_t jog1; 
-extern int8_t jog1resolution; 
-extern int8_t jog1cmd; 
+
+extern int32_t jog1, jog2, jog3, jog4; 
+extern int8_t jog1resolution, jog1cmd, jog2resolution, jog2cmd, jog3resolution, jog3cmd, jog4resolution, jog4cmd; 
+
+
+#define jog_cw 1
+#define jog_ccw 2
+
 
 #define jog1l	1
 #define jog1r	2
@@ -126,22 +131,32 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin LL_GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
-#define ENC3_A_Pin LL_GPIO_PIN_6
-#define ENC3_A_GPIO_Port GPIOA
-#define ENC3_B_Pin LL_GPIO_PIN_7
-#define ENC3_B_GPIO_Port GPIOA
-#define ENC1_A_Pin LL_GPIO_PIN_8
-#define ENC1_A_GPIO_Port GPIOA
-#define ENC1_B_Pin LL_GPIO_PIN_9
-#define ENC1_B_GPIO_Port GPIOA
-#define ENC2_A_Pin LL_GPIO_PIN_15
-#define ENC2_A_GPIO_Port GPIOA
-#define ENC2_B_Pin LL_GPIO_PIN_3
-#define ENC2_B_GPIO_Port GPIOB
-#define ENC4_A_Pin LL_GPIO_PIN_6
-#define ENC4_A_GPIO_Port GPIOB
-#define ENC4_B_Pin LL_GPIO_PIN_7
-#define ENC4_B_GPIO_Port GPIOB
+#define FR_Pin LL_GPIO_PIN_14
+#define FR_GPIO_Port GPIOC
+#define FL_Pin LL_GPIO_PIN_15
+#define FL_GPIO_Port GPIOC
+#define FB_Pin LL_GPIO_PIN_4
+#define FB_GPIO_Port GPIOA
+#define FF_Pin LL_GPIO_PIN_5
+#define FF_GPIO_Port GPIOA
+#define ENC3_A_3v_Pin LL_GPIO_PIN_6
+#define ENC3_A_3v_GPIO_Port GPIOA
+#define ENC3_B_3v_Pin LL_GPIO_PIN_7
+#define ENC3_B_3v_GPIO_Port GPIOA
+#define ENC1_A_5v_Pin LL_GPIO_PIN_8
+#define ENC1_A_5v_GPIO_Port GPIOA
+#define ENC1_B_5v_Pin LL_GPIO_PIN_9
+#define ENC1_B_5v_GPIO_Port GPIOA
+#define LEFT_TOP_Pin LL_GPIO_PIN_12
+#define LEFT_TOP_GPIO_Port GPIOA
+#define ENC2_A_5v_Pin LL_GPIO_PIN_15
+#define ENC2_A_5v_GPIO_Port GPIOA
+#define ENC2_B_5v_Pin LL_GPIO_PIN_3
+#define ENC2_B_5v_GPIO_Port GPIOB
+#define ENC4_A_5v_Pin LL_GPIO_PIN_6
+#define ENC4_A_5v_GPIO_Port GPIOB
+#define ENC4_B_5v_Pin LL_GPIO_PIN_7
+#define ENC4_B_5v_GPIO_Port GPIOB
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  4 bits for subpriority */

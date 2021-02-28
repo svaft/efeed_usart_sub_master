@@ -26,3 +26,4 @@ efeed_usart_sub_master\main.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 efeed_usart_sub_master\main.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 efeed_usart_sub_master\main.o: ../Inc/stm32f1xx_it.h
 efeed_usart_sub_master\main.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+efeed_usart_sub_master\main.o: ../Inc/buttons.h

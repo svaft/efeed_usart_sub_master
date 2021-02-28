@@ -1,5 +1,6 @@
 --cpu Cortex-M3
 "efeed_usart_sub_master\startup_stm32f103xb.o"
+"efeed_usart_sub_master\buttons.o"
 "efeed_usart_sub_master\main.o"
 "efeed_usart_sub_master\stm32f1xx_it.o"
 "efeed_usart_sub_master\stm32f1xx_ll_gpio.o"

@@ -38,6 +38,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "buttons.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,6 +112,10 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+	for(int a = 0; a<BT_TOTAL;a++){
+		if( bt[a].buttons_mstick > 0 )
+			bt[a].buttons_mstick++;
+	}
 
   /* USER CODE END SysTick_IRQn 0 */
 
@@ -128,6 +133,87 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles TIM1 update interrupt.
+  */
+void TIM1_UP_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_UP_IRQn 0 */
+	TIM1->SR = 0; // clear SR at the beginning of the interrupt to avoid false call it twice, http://www.keil.com/support/docs/3928.htm 
+	if(LL_TIM_GetDirection(TIM1) == LL_TIM_COUNTERDIRECTION_DOWN){
+		jog1--;
+		jog1cmd = jog_ccw;
+	} else {
+		jog1++;
+		jog1cmd = jog_cw;
+	}
+	menu_changed = 1;
+
+	
+	////	debug7();
+//	// enable corresponding channel for sub-step:
+//	debug1();
+//	TIM3->CCER = state_hw.substep_mask;
+//	// start pulse:
+//	LL_TIM_EnableCounter(TIM3); 
+//	// stop sub-step timer:
+//	LL_TIM_DisableCounter(TIM1);
+//	LL_TIM_SetCounter(TIM1,0);
+//	TIM1->SR = 0;
+//	return;
+  /* USER CODE END TIM1_UP_IRQn 0 */
+  /* USER CODE BEGIN TIM1_UP_IRQn 1 */
+//  if(LL_TIM_IsActiveFlag_UPDATE(TIM1) == 1)
+//  {
+//    /* Clear the update interrupt flag*/
+//    LL_TIM_ClearFlag_UPDATE(TIM1);
+//  }
+
+  /* USER CODE END TIM1_UP_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+	TIM2->SR = 0; // clear SR at the beginning of the interrupt to avoid false call it twice, http://www.keil.com/support/docs/3928.htm 
+	if(LL_TIM_GetDirection(TIM2) == LL_TIM_COUNTERDIRECTION_DOWN){
+		jog2--;
+		jog2cmd = jog_ccw;
+	} else {
+		jog2++;
+		jog2cmd = jog_cw;
+	}
+	menu_changed = 1;
+
+  /* USER CODE END TIM2_IRQn 0 */
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+	TIM3->SR = 0; // clear SR at the beginning of the interrupt to avoid false call it twice, http://www.keil.com/support/docs/3928.htm 
+	if(LL_TIM_GetDirection(TIM3) == LL_TIM_COUNTERDIRECTION_DOWN){
+		jog3--;
+		jog3cmd = jog_ccw;
+	} else {
+		jog3++;
+		jog3cmd = jog_cw;
+	}
+  /* USER CODE END TIM3_IRQn 0 */
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM4 global interrupt.
   */
 void TIM4_IRQHandler(void)
@@ -135,22 +221,22 @@ void TIM4_IRQHandler(void)
   /* USER CODE BEGIN TIM4_IRQn 0 */
 	TIM4->SR = 0; // clear SR at the beginning of the interrupt to avoid false call it twice, http://www.keil.com/support/docs/3928.htm 
 	if(LL_TIM_GetDirection(TIM4) == LL_TIM_COUNTERDIRECTION_DOWN){
-		if(jog1resolution == 0){
-			jog1++;
-			jog1cmd = jog1l;
+		if(jog4resolution == 0){
+			jog4++;
+			jog4cmd = jog1l;
 		}
 		else{
-			jog1+=10;
-			jog1cmd = jog1L;
+			jog4+=10;
+			jog4cmd = jog1L;
 		}
 	} else {
-		if(jog1resolution == 0){
-			jog1--;
-			jog1cmd = jog1r;
+		if(jog4resolution == 0){
+			jog4--;
+			jog4cmd = jog1r;
 		}
 		else{
-			jog1-=10;
-			jog1cmd = jog1R;
+			jog4-=10;
+			jog4cmd = jog1R;
 		}
 	}
 	menu_changed = 1;

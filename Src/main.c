@@ -47,6 +47,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "buttons.h"
+
 //#define ARM_MATH_CM3
 //#include "arm_math.h"
 /* USER CODE END Includes */
@@ -90,9 +92,9 @@ G96, G97 Spindle Control Mode, G97 (RPM Mode)
 
 bool menu_changed = false;
 
-int32_t jog1 = 0;
-int8_t jog1resolution = 0;
-int8_t jog1cmd = 0;
+int32_t jog1 = 0, jog2 = 0, jog3 = 0, jog4 = 0; 
+int8_t jog1resolution = 0, jog1cmd = 0, jog2resolution = 0, jog2cmd = 0, jog3resolution = 0, jog3cmd = 0, jog4resolution = 0, jog4cmd = 0; 
+
 //#define _SIMU
 bool auto_mode = false;
 int32_t auto_mode_delay = -1; // default delay between change direction is 6 secons
@@ -321,30 +323,64 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+	init_buttons();
 
-	/* Enable DMA TX Interrupt */
+	// Enable DMA TX Interrupt
 //  LL_USART_EnableDMAReq_TX(USART_controller);
-  /* Enable DMA Channel Tx */
+  // Enable DMA Channel Tx
 //  LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
 
-  /* Clear Overrun flag, in case characters have already been sent to USART */
+  // Clear Overrun flag, in case characters have already been sent to USART
   LL_USART_ClearFlag_ORE(USART_controller);
-  /* Enable RXNE and Error interrupts */
+  // Enable RXNE and Error interrupts
   LL_USART_EnableIT_RXNE(USART_controller);
   LL_USART_EnableIT_ERROR(USART_controller);
 
 
-/* Clear Overrun flag, in case characters have already been sent to USART */
+// Clear Overrun flag, in case characters have already been sent to USART
   LL_USART_ClearFlag_ORE(USART_screen);
-  /* Enable RXNE and Error interrupts */
+  // Enable RXNE and Error interrupts
   LL_USART_EnableIT_RXNE(USART_screen);
   LL_USART_EnableIT_ERROR(USART_screen);
 
 // init encoder4:
+
 	LL_TIM_ClearFlag_UPDATE(TIM4);
 	LL_TIM_EnableUpdateEvent(TIM4);
 	LL_TIM_EnableIT_UPDATE(TIM4);
 	LL_TIM_EnableCounter(TIM4);
+
+	LL_TIM_ClearFlag_UPDATE(TIM3);
+	LL_TIM_EnableUpdateEvent(TIM3);
+	LL_TIM_EnableIT_UPDATE(TIM3);
+	LL_TIM_EnableCounter(TIM3);
+
+
+	LL_GPIO_AF_EnableRemap_TIM2();
+	LL_TIM_ClearFlag_UPDATE(TIM2);
+	LL_TIM_EnableUpdateEvent(TIM2);
+	LL_TIM_EnableIT_UPDATE(TIM2);
+	LL_TIM_EnableCounter(TIM2);
+
+
+/*
+	LL_TIM_CC_EnableChannel(TIM2,LL_TIM_CHANNEL_CH1);
+	LL_TIM_CC_EnableChannel(TIM2,LL_TIM_CHANNEL_CH2);
+	
+	LL_TIM_ENCODER_InitTypeDef TIM_EncoderInitStruct;
+	LL_TIM_ENCODER_StructInit(&TIM_EncoderInitStruct);
+	TIM_EncoderInitStruct.EncoderMode = LL_TIM_ENCODERMODE_X4_TI12;
+	TIM_EncoderInitStruct.IC1Filter = LL_TIM_IC_FILTER_FDIV32_N8;
+	TIM_EncoderInitStruct.IC2Filter = LL_TIM_IC_FILTER_FDIV32_N8;
+	
+	LL_GPIO_AF_EnableRemap_TIM2();
+	LL_TIM_ENCODER_Init(TIM2, &TIM_EncoderInitStruct);
+	LL_TIM_EnableIT_CC1(TIM2);
+	LL_TIM_EnableIT_CC2(TIM2);
+*/	
+//	LL_TIM_EnableIT_UPDATE(TIM2);
+//	LL_TIM_EnableAllOutputs(TIM2);
+
 
   LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
 
@@ -355,35 +391,86 @@ int main(void)
 	
   while (1)
   {
+		process_button();
+		switch(buttons_flag_set) {
+			case long_press_start_FF:
+				PrintInfo("G0 X-200\r\n",10);
+				break;
+			case long_press_start_FB:
+				PrintInfo("G0 X200\r\n",9);
+				break;
+			case long_press_start_FL:
+				PrintInfo("G0 Z-200\r\n",10);
+				break;
+			case long_press_start_FR:
+				PrintInfo("G0 Z200\r\n",9);
+				break;
+			case long_press_end_FF:
+			case long_press_end_FB:
+			case long_press_end_FL:
+			case long_press_end_FR:
+				PrintInfo("!S\r\n",4);
+				break;
+		}		
+		buttons_flag_set = 0; // reset button flags
+
 		if(ubUARTReceptionCompleteA == 1){
 			Print2Screen(aRXBuffer,uNbReceivedCharsForUser);
 			ubUARTReceptionCompleteA = 0;
 		}
 
 		if(ubUARTReceptionCompleteB == 1){
-			PrintInfo(aRXBufferB,uNbReceivedCharsForUserB);
+			PrintInfo(aRXBuffer_screen,uNbReceivedCharsForUserB);
 			ubUARTReceptionCompleteB = 0;
 		}
 
-
-		if(jog1cmd > 0){
-			switch(jog1cmd){
-				case jog1l:
-					PrintInfo("!l\r\n",4);
-					Print2Screen("!l\r\n",4);
+		if(jog2cmd > 0){
+			switch(jog2cmd){
+				case jog_cw:
+					PrintInfo("!w\r\n",4);
+					Print2Screen("!w\r\n",4);
 					break;
-				case jog1r:
-					PrintInfo("!r\r\n",4);
-					Print2Screen("!r\r\n",4);
-					break;
-				case jog1L:
-					PrintInfo("!L\r\n",4);
-					break;
-				case jog1R:
-					PrintInfo("!R\r\n",4);
+				case jog_ccw:
+					PrintInfo("!s\r\n",4);
+					Print2Screen("!s\r\n",4);
 					break;
 			}
-			jog1cmd = 0;
+			jog2cmd = 0;
+		}
+
+		if(jog3cmd > 0){
+			switch(jog3cmd){
+				case jog_cw:
+					PrintInfo("!t\r\n",4);
+					Print2Screen("!t\r\n",4);
+					break;
+				case jog_ccw:
+					PrintInfo("!g\r\n",4);
+					Print2Screen("!g\r\n",4);
+					break;
+			}
+			jog3cmd = 0;
+		}
+		
+
+		if(jog4cmd > 0){
+			switch(jog4cmd){
+				case jog1l:
+					PrintInfo("!a\r\n",4);
+					Print2Screen("!a\r\n",4);
+					break;
+				case jog1r:
+					PrintInfo("!d\r\n",4);
+					Print2Screen("!d\r\n",4);
+					break;
+				case jog1L:
+					PrintInfo("!A\r\n",4);
+					break;
+				case jog1R:
+					PrintInfo("!D\r\n",4);
+					break;
+			}
+			jog4cmd = 0;
 		}
 // update display info
 		if(menu_changed == 1){
@@ -485,10 +572,14 @@ static void MX_TIM1_Init(void)
   PA8   ------> TIM1_CH1
   PA9   ------> TIM1_CH2
   */
-  GPIO_InitStruct.Pin = ENC1_A_Pin|ENC1_B_Pin;
+  GPIO_InitStruct.Pin = ENC1_A_5v_Pin|ENC1_B_5v_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* TIM1 interrupt Init */
+  NVIC_SetPriority(TIM1_UP_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(TIM1_UP_IRQn);
 
   /* USER CODE BEGIN TIM1_Init 1 */
 
@@ -496,19 +587,19 @@ static void MX_TIM1_Init(void)
   LL_TIM_SetEncoderMode(TIM1, LL_TIM_ENCODERMODE_X2_TI1);
   LL_TIM_IC_SetActiveInput(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV32_N8);
   LL_TIM_IC_SetPolarity(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
   LL_TIM_IC_SetActiveInput(TIM1, LL_TIM_CHANNEL_CH2, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM1, LL_TIM_CHANNEL_CH2, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV32_N8);
   LL_TIM_IC_SetPolarity(TIM1, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 65535;
+  TIM_InitStruct.Autoreload = 1;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   TIM_InitStruct.RepetitionCounter = 0;
   LL_TIM_Init(TIM1, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM1);
+  LL_TIM_EnableARRPreload(TIM1);
   LL_TIM_SetTriggerOutput(TIM1, LL_TIM_TRGO_RESET);
   LL_TIM_DisableMasterSlaveMode(TIM1);
   /* USER CODE BEGIN TIM1_Init 2 */
@@ -542,15 +633,19 @@ static void MX_TIM2_Init(void)
   PA15   ------> TIM2_CH1
   PB3   ------> TIM2_CH2
   */
-  GPIO_InitStruct.Pin = ENC2_A_Pin;
+  GPIO_InitStruct.Pin = ENC2_A_5v_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-  LL_GPIO_Init(ENC2_A_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(ENC2_A_5v_GPIO_Port, &GPIO_InitStruct);
 
-  GPIO_InitStruct.Pin = ENC2_B_Pin;
+  GPIO_InitStruct.Pin = ENC2_B_5v_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-  LL_GPIO_Init(ENC2_B_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(ENC2_B_5v_GPIO_Port, &GPIO_InitStruct);
+
+  /* TIM2 interrupt Init */
+  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(TIM2_IRQn);
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
@@ -558,15 +653,15 @@ static void MX_TIM2_Init(void)
   LL_TIM_SetEncoderMode(TIM2, LL_TIM_ENCODERMODE_X2_TI1);
   LL_TIM_IC_SetActiveInput(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV32_N8);
   LL_TIM_IC_SetPolarity(TIM2, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);
   LL_TIM_IC_SetActiveInput(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_ACTIVEINPUT_DIRECTTI);
   LL_TIM_IC_SetPrescaler(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV1);
+  LL_TIM_IC_SetFilter(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_IC_FILTER_FDIV32_N8);
   LL_TIM_IC_SetPolarity(TIM2, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 65535;
+  TIM_InitStruct.Autoreload = 1;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM2, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM2);
@@ -602,10 +697,14 @@ static void MX_TIM3_Init(void)
   PA6   ------> TIM3_CH1
   PA7   ------> TIM3_CH2
   */
-  GPIO_InitStruct.Pin = ENC3_A_Pin|ENC3_B_Pin;
+  GPIO_InitStruct.Pin = ENC3_A_3v_Pin|ENC3_B_3v_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* TIM3 interrupt Init */
+  NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(TIM3_IRQn);
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
@@ -621,7 +720,7 @@ static void MX_TIM3_Init(void)
   LL_TIM_IC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_IC_POLARITY_RISING);
   TIM_InitStruct.Prescaler = 0;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 0;
+  TIM_InitStruct.Autoreload = 1;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM3, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM3);
@@ -657,7 +756,7 @@ static void MX_TIM4_Init(void)
   PB6   ------> TIM4_CH1
   PB7   ------> TIM4_CH2
   */
-  GPIO_InitStruct.Pin = ENC4_A_Pin|ENC4_B_Pin;
+  GPIO_InitStruct.Pin = ENC4_A_5v_Pin|ENC4_B_5v_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -832,14 +931,20 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_14|LL_GPIO_PIN_15;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pin = FR_Pin|FL_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_0|LL_GPIO_PIN_1|LL_GPIO_PIN_4|LL_GPIO_PIN_5
-                          |LL_GPIO_PIN_10|LL_GPIO_PIN_11|LL_GPIO_PIN_12;
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0|LL_GPIO_PIN_1|LL_GPIO_PIN_10|LL_GPIO_PIN_11;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = FB_Pin|FF_Pin|LEFT_TOP_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /**/
