@@ -145,12 +145,81 @@ static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
-void USART_CharReception_Callback(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+
+typedef struct circular_buffer
+{
+    void *buffer;     // data buffer
+    void *buffer_end; // end of data buffer
+    size_t capacity;  // maximum number of items in the buffer
+    size_t count;     // number of items in the buffer
+    size_t sz;        // size of each item in the buffer
+    void *head;       // pointer to head
+    void *tail;       // pointer to tail
+} circular_buffer;
+
+void cb_init(circular_buffer *cb, size_t capacity, size_t sz)
+{
+    cb->buffer = malloc(capacity * sz);
+    if(cb->buffer == NULL)
+			return;
+        // handle error
+    cb->buffer_end = (char *)cb->buffer + capacity * sz;
+    cb->capacity = capacity;
+    cb->count = 0;
+    cb->sz = sz;
+    cb->head = cb->buffer;
+    cb->tail = cb->buffer;
+}
+
+void cb_free(circular_buffer *cb)
+{
+    free(cb->buffer);
+    // clear out other fields too, just to be safe
+}
+
+void cb_push_back(circular_buffer *cb, const void *item)
+{
+//    if(cb->count == cb->capacity)
+        // handle error
+    memcpy(cb->head, item, cb->sz);
+    cb->head = (char*)cb->head + cb->sz;
+    if(cb->head == cb->buffer_end)
+        cb->head = cb->buffer;
+    cb->count++;
+}
+
+void cb_push_back_uint8t(circular_buffer *cb, uint8_t item)
+{
+//    if(cb->count == cb->capacity)
+        // handle error
+    memcpy(cb->head, &item, cb->sz);
+//		memset(cb->head, &item, cb->sz);
+    cb->head = (char*)cb->head + cb->sz;
+    if(cb->head == cb->buffer_end)
+        cb->head = cb->buffer;
+    cb->count++;
+}
+
+void cb_pop_front(circular_buffer *cb, void *item)
+{
+    if(cb->count == 0)
+			return;
+        // handle error
+    memcpy(item, cb->tail, cb->sz);
+    cb->tail = (char*)cb->tail + cb->sz;
+    if(cb->tail == cb->buffer_end)
+        cb->tail = cb->buffer;
+    cb->count--;
+}
+
+circular_buffer uart2bt;
+circular_buffer uart2lathe;
 
 
 /**
@@ -175,8 +244,10 @@ void USART_CharReception_Callback(void)
 {
   /* Read Received character. RXNE flag is cleared by reading of DR register */
 	uint8_t symbol = LL_USART_ReceiveData8(USART_controller);
+	cb_push_back_uint8t(&uart2bt, symbol);
+/*	
+	
 	if(symbol == '\n'){
-    /* Set Buffer swap indication */
 		if(uwNbReceivedChars == 1){
 			memset(&aRXBufferA,0,RX_BUFFER_SIZE);
 			uwNbReceivedChars = 0;
@@ -191,9 +262,12 @@ void USART_CharReception_Callback(void)
 		memset(&aRXBufferA,0,RX_BUFFER_SIZE);		
     uwNbReceivedChars = 0;
 	} else {
-		if(symbol != 0)
+//		if(symbol != 0)
+//  		LL_USART_TransmitData8(USART_screen, symbol); //
+//  		LL_USART_TransmitData8(USART_screen, symbol); //
 			aRXBufferA[uwNbReceivedChars++] = symbol;
 	}
+	*/
 }
 
 
@@ -202,8 +276,9 @@ void USART_CharReception_Callback_UP(void)
 {
   /* Read Received character. RXNE flag is cleared by reading of DR register */
 	uint8_t symbol = LL_USART_ReceiveData8(USART_screen);
+	cb_push_back_uint8t(&uart2lathe, symbol);
+/*
 	if(symbol == '\n'){
-    /* Set Buffer swap indication */
 		if(uwNbReceivedCharsB == 1){
 			memset(&aRXBufferB,0,RX_BUFFER_SIZE);
 			uwNbReceivedCharsB = 0;
@@ -218,16 +293,55 @@ void USART_CharReception_Callback_UP(void)
 		memset(&aRXBufferB,0,RX_BUFFER_SIZE);
     uwNbReceivedCharsB = 0;
 	} else {
-		if(symbol != 0)
+//		if(symbol != 0)
 			aRXBufferB[uwNbReceivedCharsB++] = symbol;
+	}
+*/
+}
+
+void Send2LatheOnly(char *String, uint32_t Size)
+{
+  uint8_t *pchar = (uint8_t *)String;
+  for (int index = 0; index < Size; index++)
+  {
+		cb_push_back_uint8t(&uart2lathe, *pchar++);
 	}
 }
 
 
-void Print2Screen(uint8_t *String, uint32_t Size)
+void Send2LatheAndBluetooth(char *String, uint32_t Size)
+{
+  uint8_t *pchar = (uint8_t *)String;
+  for (int index = 0; index < Size; index++)
+  {
+    uint8_t data = *pchar++;
+		cb_push_back_uint8t(&uart2bt, data);
+		cb_push_back_uint8t(&uart2lathe, data);
+	}
+}
+
+void SendByte2bt()
+{
+	if(!LL_USART_IsActiveFlag_TXE(USART_screen))
+		return;
+	uint8_t data;
+	cb_pop_front(&uart2bt,&data);
+  LL_USART_TransmitData8(USART_screen, data);
+}
+void SendByte2lathe()
+{
+	if(!LL_USART_IsActiveFlag_TXE(USART_controller))
+		return;
+	uint8_t data;
+	cb_pop_front(&uart2lathe,&data);
+  LL_USART_TransmitData8(USART_controller, data);
+}
+
+
+void Send2Bluetooth(char *String, uint32_t Size)
 {
   uint32_t index = 0;
-  uint8_t *pchar = String;
+  uint8_t *pchar = (uint8_t *)String;
   
   /* Send characters one per one, until last char to be sent */
   for (index = 0; index < Size; index++)
@@ -249,10 +363,10 @@ void Print2Screen(uint8_t *String, uint32_t Size)
 }
 
 
-void PrintInfo(uint8_t *String, uint32_t Size)
+void Send2Lathe(char *String, uint32_t Size)
 {
   uint32_t index = 0;
-  uint8_t *pchar = String;
+  uint8_t *pchar = (uint8_t *)String;
   
   /* Send characters one per one, until last char to be sent */
   for (index = 0; index < Size; index++)
@@ -283,8 +397,11 @@ void PrintInfo(uint8_t *String, uint32_t Size)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
+	cb_init(&uart2bt,  100, sizeof(uint8_t));
+	cb_init(&uart2lathe,  100, sizeof(uint8_t));
+//	cb_push_back_uint8t(&uart2bt, '!');
+  
+	/* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -394,45 +511,62 @@ int main(void)
 		process_button();
 		switch(buttons_flag_set) {
 			case long_press_start_FF:
-				PrintInfo("G0 X-200\r\n",10);
+				Send2Lathe("G0 X-200\r\n",10);
 				break;
 			case long_press_start_FB:
-				PrintInfo("G0 X200\r\n",9);
+				Send2Lathe("G0 X200\r\n",9);
 				break;
 			case long_press_start_FL:
-				PrintInfo("G0 Z-200\r\n",10);
+				Send2Lathe("G0 Z-200\r\n",10);
 				break;
 			case long_press_start_FR:
-				PrintInfo("G0 Z200\r\n",9);
+				Send2Lathe("G0 Z200\r\n",9);
 				break;
 			case long_press_end_FF:
 			case long_press_end_FB:
 			case long_press_end_FL:
-			case long_press_end_FR:
-				PrintInfo("!S\r\n",4);
+			case long_press_end_FR: // stop current move
+				Send2Lathe("!S\r\n",4);
+				break;
+			case single_click_LEFT_TOP:// repeat last command
+				Send2Lathe("!3\r\n",4);
+				Send2Bluetooth("!3\r\n",4);
+				break;
+			case long_press_start_LEFT_TOP: // stop current move
+				Send2Lathe("!S\r\n",4);
+				Send2Bluetooth("!S\r\n",4);
 				break;
 		}		
 		buttons_flag_set = 0; // reset button flags
 
+		if(uart2bt.count > 0)
+			SendByte2bt();
+		if(uart2lathe.count > 0)
+			SendByte2lathe();
+
+			 
 		if(ubUARTReceptionCompleteA == 1){
-			Print2Screen(aRXBuffer,uNbReceivedCharsForUser);
+//			Send2Bluetooth(aRXBuffer,uNbReceivedCharsForUser);
 			ubUARTReceptionCompleteA = 0;
 		}
 
 		if(ubUARTReceptionCompleteB == 1){
-			PrintInfo(aRXBuffer_screen,uNbReceivedCharsForUserB);
+//			Send2Lathe(aRXBuffer_screen,uNbReceivedCharsForUserB);
 			ubUARTReceptionCompleteB = 0;
 		}
 
 		if(jog2cmd > 0){
 			switch(jog2cmd){
 				case jog_cw:
-					PrintInfo("!w\r\n",4);
-					Print2Screen("!w\r\n",4);
+					Send2LatheOnly("!w\n",3);
+
+//				  Send2Lathe("!w\r\n",4);
+//					Send2Bluetooth("!w\r\n",4);
 					break;
 				case jog_ccw:
-					PrintInfo("!s\r\n",4);
-					Print2Screen("!s\r\n",4);
+					Send2LatheOnly("!s\n",3);
+//					Send2Lathe("!s\r\n",4);
+//					Send2Bluetooth("!s\r\n",4);
 					break;
 			}
 			jog2cmd = 0;
@@ -441,12 +575,14 @@ int main(void)
 		if(jog3cmd > 0){
 			switch(jog3cmd){
 				case jog_cw:
-					PrintInfo("!t\r\n",4);
-					Print2Screen("!t\r\n",4);
+					Send2LatheOnly("!g\n",3);
+//					Send2Lathe("!g\r\n",4);
+//					Send2Bluetooth("!g\r\n",4);
 					break;
 				case jog_ccw:
-					PrintInfo("!g\r\n",4);
-					Print2Screen("!g\r\n",4);
+					Send2LatheOnly("!t\n",3);
+//					Send2Lathe("!t\r\n",4);
+//					Send2Bluetooth("!t\r\n",4);
 					break;
 			}
 			jog3cmd = 0;
@@ -456,18 +592,22 @@ int main(void)
 		if(jog4cmd > 0){
 			switch(jog4cmd){
 				case jog1l:
-					PrintInfo("!a\r\n",4);
-					Print2Screen("!a\r\n",4);
+					Send2LatheOnly("!a\n",3);
+//					Send2Lathe("!a\r\n",4);
+//					Send2Bluetooth("!a\r\n",4);
 					break;
 				case jog1r:
-					PrintInfo("!d\r\n",4);
-					Print2Screen("!d\r\n",4);
+					Send2LatheOnly("!d\n",3);
+//					Send2Lathe("!d\r\n",4);
+//					Send2Bluetooth("!d\r\n",4);
 					break;
 				case jog1L:
-					PrintInfo("!A\r\n",4);
+					Send2LatheAndBluetooth("!A\r\n",4);
+//					Send2Lathe("!A\r\n",4);
 					break;
 				case jog1R:
-					PrintInfo("!D\r\n",4);
+					Send2LatheAndBluetooth("!D\r\n",4);
+//					Send2Lathe("!D\r\n",4);
 					break;
 			}
 			jog4cmd = 0;

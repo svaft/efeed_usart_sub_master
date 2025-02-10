@@ -64,6 +64,7 @@
 #define long_press_end_FB			long_press_end_Msk2
 #define long_press_end_FL			long_press_end_Msk3
 #define long_press_end_FR			long_press_end_Msk4
+#define long_press_end_LEFT_TOP			long_press_end_Msk5
 
 
 #define single_click_Pos      (2U)
@@ -75,11 +76,11 @@
 #define single_click_Msk6      (single_click_Msk << 5*4)
 #define single_click_Msk7      (single_click_Msk << 6*4)
 #define single_click_Msk8      (single_click_Msk << 7*4)
-#define single_click_CENTER				single_click_Msk
-#define single_click_LEFT_TOP			single_click_Msk2
-#define single_click_RIGHT_TOP		single_click_Msk3
-#define single_click_LEFT_BOTTOM	single_click_Msk4
-#define single_click_RIGHT_BOTTOM	single_click_Msk5
+//#define single_click_CENTER				single_click_Msk
+#define single_click_LEFT_TOP			single_click_Msk5
+//#define single_click_RIGHT_TOP		single_click_Msk3
+//#define single_click_LEFT_BOTTOM	single_click_Msk4
+//#define single_click_RIGHT_BOTTOM	single_click_Msk5
 
 
 #define double_click_Pos      (3U)
@@ -91,10 +92,11 @@
 #define double_click_Msk6      (double_click_Msk << 5*4)
 #define double_click_Msk7      (double_click_Msk << 6*4)
 #define double_click_Msk8      (double_click_Msk << 7*4)
-#define double_click_LEFT_TOP			double_click_Msk2
-#define double_click_RIGHT_TOP		double_click_Msk3
-#define double_click_LEFT_BOTTOM	double_click_Msk4
-#define double_click_RIGHT_BOTTOM	double_click_Msk5
+
+#define double_click_LEFT_TOP			double_click_Msk5
+//#define double_click_RIGHT_TOP		double_click_Msk3
+//#define double_click_LEFT_BOTTOM	double_click_Msk4
+//#define double_click_RIGHT_BOTTOM	double_click_Msk5
 
 
 typedef struct

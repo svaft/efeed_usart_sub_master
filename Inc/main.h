@@ -125,6 +125,8 @@ extern __IO uint8_t  ubMasterNbDataToReceive;
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void USART_CharReception_Callback(void);
+void USART_CharReception_Callback_UP(void);
 
 /* USER CODE END EFP */
 
