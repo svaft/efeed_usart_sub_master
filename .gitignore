@@ -1,0 +1,9 @@
+*.d
+*.d
+*.o
+*.map
+*.dep
+*.crf
+*.axf
+MDK-ARM/efeed_usart_sub_master/efeed_usart_sub_master.build_log.htm
+/MDK-ARM/efeed_usart_sub_master

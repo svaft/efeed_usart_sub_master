@@ -1,12 +1,15 @@
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_usart.c
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usart.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Include/core_cm3.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Include/cmsis_version.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rcc.h
-efeed_usart_sub_master\stm32f1xx_ll_usart.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_bus.h
+efeed_usart_sub_master/stm32f1xx_ll_usart.o: \
+  ..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_ll_usart.c \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usart.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xb.h \
+  ..\Drivers\CMSIS\Include\core_cm3.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  ..\Drivers\CMSIS\Include\cmsis_version.h \
+  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
+  ..\Drivers\CMSIS\Include\cmsis_armclang.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_rcc.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_bus.h

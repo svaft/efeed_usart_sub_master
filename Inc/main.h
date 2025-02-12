@@ -49,6 +49,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_ll_crc.h"
+#include "stm32f1xx_ll_i2c.h"
 #include "stm32f1xx_ll_rcc.h"
 #include "stm32f1xx_ll_bus.h"
 #include "stm32f1xx_ll_system.h"
@@ -59,7 +60,6 @@ extern "C" {
 #include "stm32f1xx_ll_dma.h"
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_usart.h"
-#include "stm32f1xx.h"
 #include "stm32f1xx_ll_gpio.h"
 
 #if defined(USE_FULL_ASSERT)
@@ -171,6 +171,7 @@ void USART_CharReception_Callback_UP(void);
 #define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
 #endif
+
 /* USER CODE BEGIN Private defines */
 // extract GPIO pin nuber by passing LL_GPIO_PIN_x value to it. 
 // Use this value for compute bit-banding address of pin at compiling time by preprocessor
@@ -183,5 +184,3 @@ void USART_CharReception_Callback_UP(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -14,7 +14,7 @@
 // BB_VAR must be greater then 0x20000000 + RW-data (see at build output after linking). 
 // if there are error L6971E just enlarge BB_VAR variable
 //#define BB_VAR   	0x20004000 
-#define BB_VAR 		SRAM_BASE + 96//5440 //0x4000
+#define BB_VAR 		SRAM_BASE + 240//5440 //0x4000
 #define BITBAND_SRAM(a,b) ((SRAM_BB_BASE + (a-SRAM_BASE)*32 + (b*4)))  // Convert SRAM address
 
 
@@ -78,6 +78,13 @@
 #define single_click_Msk8      (single_click_Msk << 7*4)
 //#define single_click_CENTER				single_click_Msk
 #define single_click_LEFT_TOP			single_click_Msk5
+#define single_click_FF			single_click_Msk
+#define single_click_FB			single_click_Msk2
+#define single_click_FL			single_click_Msk3
+#define single_click_FR			single_click_Msk4
+#define single_click_LEFT_TOP			single_click_Msk5
+#define single_click_RIGHT_BOTTOM		single_click_Msk6
+
 //#define single_click_RIGHT_TOP		single_click_Msk3
 //#define single_click_LEFT_BOTTOM	single_click_Msk4
 //#define single_click_RIGHT_BOTTOM	single_click_Msk5
@@ -109,6 +116,8 @@ typedef struct
 
 extern BUTTON bt[BT_TOTAL];
 
+
+//extern volatile *uint32_t;
 extern uint32_t buttons_flag_set;// __attribute__((at(BB_VAR)));
 extern __IO uint8_t  ubTransferComplete;
 

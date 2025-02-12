@@ -1,28 +1,29 @@
-efeed_usart_sub_master\stm32f1xx_it.o: ../Src/stm32f1xx_it.c
-efeed_usart_sub_master\stm32f1xx_it.o: ../Inc/main.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_crc.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Include/core_cm3.h
-efeed_usart_sub_master\stm32f1xx_it.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Include/cmsis_version.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_rcc.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_bus.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_system.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_exti.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_cortex.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_utils.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_pwr.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_dma.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_tim.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usart.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_gpio.h
-efeed_usart_sub_master\stm32f1xx_it.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-efeed_usart_sub_master\stm32f1xx_it.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-efeed_usart_sub_master\stm32f1xx_it.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-efeed_usart_sub_master\stm32f1xx_it.o: C:\DEV\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Inc/stm32f1xx_it.h
-efeed_usart_sub_master\stm32f1xx_it.o: ../Inc/buttons.h
+efeed_usart_sub_master/stm32f1xx_it.o: ..\Src\stm32f1xx_it.c \
+  ..\Inc\main.h ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_crc.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xb.h \
+  ..\Drivers\CMSIS\Include\core_cm3.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  ..\Drivers\CMSIS\Include\cmsis_version.h \
+  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
+  ..\Drivers\CMSIS\Include\cmsis_armclang.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\system_stm32f1xx.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_i2c.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_rcc.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_bus.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_system.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_exti.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_cortex.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_utils.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_pwr.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_dma.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_tim.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usart.h \
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_gpio.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  ..\Inc\stm32f1xx_it.h ..\Inc\buttons.h

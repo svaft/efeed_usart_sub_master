@@ -4,7 +4,9 @@
 
 
 //uint32_t buttons_flag_set = 0;
-uint32_t buttons_flag_set __attribute__((at(BB_VAR)));
+uint32_t buttons_flag_set __attribute__((at(BB_VAR))); // ARM v5 compiler
+//uint32_t buttons_flag_set __attribute__((section(".ARM.__at_0x0060"))); // v6 compiler
+//volatile uint32_t * const buttons_flag_set = (volatile uint32_t *) (SRAM_BASE + 96);
 
 uint32_t buttons_flag_set_prev = 0;
 BUTTON bt[BT_TOTAL];
