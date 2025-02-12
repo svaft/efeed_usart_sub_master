@@ -115,6 +115,8 @@ __IO uint32_t	uwNbReceivedChars;
 __IO uint8_t	uNbReceivedCharsForUser;
 __IO uint32_t	uwNbReceivedCharsB;
 __IO uint8_t	uNbReceivedCharsForUserB;
+__IO bool releaseTXtoBT = false;
+
 
 		
 __IO uint32_t	uwBufferReadyIndication;
@@ -155,8 +157,8 @@ static void MX_I2C1_Init(void);
 
 typedef struct circular_buffer
 {
-    void *buffer;     // data buffer
-    void *buffer_end; // end of data buffer
+    volatile void *buffer;     // data buffer
+    volatile void *buffer_end; // end of data buffer
     size_t capacity;  // maximum number of items in the buffer
     volatile size_t count;     // number of items in the buffer
     size_t sz;        // size of each item in the buffer
@@ -246,6 +248,9 @@ void USART_CharReception_Callback(void)
   /* Read Received character. RXNE flag is cleared by reading of DR register */
 	uint8_t symbol = LL_USART_ReceiveData8(USART_controller);
 	cb_push_back_uint8t(&uart2bt, symbol);
+	if(symbol == '\n'){
+		releaseTXtoBT = true;
+	}
 /*	
 	
 	if(symbol == '\n'){
@@ -278,7 +283,8 @@ void USART_CharReception_Callback_UP(void)
   /* Read Received character. RXNE flag is cleared by reading of DR register */
 	uint8_t symbol = LL_USART_ReceiveData8(USART_screen);
 	cb_push_back_uint8t(&uart2lathe, symbol);
-/*
+
+	/*
 	if(symbol == '\n'){
 		if(uwNbReceivedCharsB == 1){
 			memset(&aRXBufferB,0,RX_BUFFER_SIZE);
@@ -309,7 +315,7 @@ void Send2LatheOnly(char *String, uint32_t Size)
 	}
 }
 
-
+/*
 void Send2LatheAndBluetooth(char *String, uint32_t Size)
 {
   uint8_t *pchar = (uint8_t *)String;
@@ -320,7 +326,7 @@ void Send2LatheAndBluetooth(char *String, uint32_t Size)
 		cb_push_back_uint8t(&uart2lathe, data);
 	}
 }
-
+*/
 void SendByte2bt()
 {
 	if(!LL_USART_IsActiveFlag_TXE(USART_screen))
@@ -329,6 +335,7 @@ void SendByte2bt()
 	cb_pop_front(&uart2bt,&data);
   LL_USART_TransmitData8(USART_screen, data);
 }
+
 void SendByte2lathe()
 {
 	if(!LL_USART_IsActiveFlag_TXE(USART_controller))
@@ -515,16 +522,16 @@ int main(void)
 		process_button();
 		switch(buttons_flag_set) {
 			case long_press_start_FF:
-				Send2Lathe("G0 X-200\r\n",10);
+				Send2LatheOnly("G0 X-200\r\n",10);
 				break;
 			case long_press_start_FB:
-				Send2Lathe("G0 X200\r\n",9);
+				Send2LatheOnly("G0 X200\r\n",9);
 				break;
 			case long_press_start_FL:
-				Send2Lathe("G0 Z-200\r\n",10);
+				Send2LatheOnly("G0 Z-200\r\n",10);
 				break;
 			case long_press_start_FR:
-				Send2Lathe("G0 Z200\r\n",9);
+				Send2LatheOnly("G0 Z200\r\n",9);
 				break;
 			case long_press_end_FF:
 			case long_press_end_FB:
@@ -536,34 +543,27 @@ int main(void)
 			case single_click_FL: 
 			case single_click_FR: 
 				// stop current move
-				Send2Lathe("!S\r\n",4);
+				Send2LatheOnly("!S\r\n",4);
 				break;
 			case single_click_LEFT_TOP:// repeat last command
-				Send2Lathe("!3\r\n",4);
-				Send2Bluetooth("!3\r\n",4);
+				Send2LatheOnly("!3\r\n",4);
+//				Send2Bluetooth("!3\r\n",4);
 				break;
 			case long_press_start_LEFT_TOP: // stop current move
-				Send2Lathe("!S\r\n",4);
-				Send2Bluetooth("!S\r\n",4);
+				Send2LatheOnly("!S\r\n",4);
+//				Send2Bluetooth("!S\r\n",4);
 				break;
 		}		
 		buttons_flag_set = 0; // reset button flags
 
+		if(releaseTXtoBT && uart2bt.count > 0){
 		while(uart2bt.count > 0)
 			SendByte2bt();
+			releaseTXtoBT = false;
+		}
 		while(uart2lathe.count > 0)
 			SendByte2lathe();
 
-			 
-		if(ubUARTReceptionCompleteA == 1){
-//			Send2Bluetooth(aRXBuffer,uNbReceivedCharsForUser);
-			ubUARTReceptionCompleteA = 0;
-		}
-
-		if(ubUARTReceptionCompleteB == 1){
-//			Send2Lathe(aRXBuffer_screen,uNbReceivedCharsForUserB);
-			ubUARTReceptionCompleteB = 0;
-		}
 
 		if(jog2cmd > 0){
 			switch(jog2cmd){
@@ -612,11 +612,11 @@ int main(void)
 //					Send2Bluetooth("!d\r\n",4);
 					break;
 				case jog1L:
-					Send2LatheAndBluetooth("!A\r\n",4);
+					Send2LatheOnly("!A\r\n",4);
 //					Send2Lathe("!A\r\n",4);
 					break;
 				case jog1R:
-					Send2LatheAndBluetooth("!D\r\n",4);
+					Send2LatheOnly("!D\r\n",4);
 //					Send2Lathe("!D\r\n",4);
 					break;
 			}

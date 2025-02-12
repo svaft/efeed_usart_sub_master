@@ -27,7 +27,39 @@ Project File Date:  02/11/2025
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'efeed_usart_sub_master'
-"efeed_usart_sub_master\efeed_usart_sub_master.axf" - 0 Error(s), 0 Warning(s).
+../Src/buttons.c(7): warning: unknown attribute 'at' ignored [-Wunknown-attributes]
+uint32_t buttons_flag_set __attribute__((at(BB_VAR))); // ARM v5 compiler
+                                         ^~~~~~~~~~
+1 warning generated.
+compiling buttons.c...
+compiling stm32f1xx_it.c...
+../Src/main.c(179): warning: assigning to 'void *' from 'volatile void *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    cb->head = cb->buffer;
+             ^ ~~~~~~~~~~
+../Src/main.c(180): warning: assigning to 'void *' from 'volatile void *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    cb->tail = cb->buffer;
+             ^ ~~~~~~~~~~
+../Src/main.c(185): warning: passing 'volatile void *' to parameter of type 'void *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+    free(cb->buffer);
+         ^~~~~~~~~~
+C:\DEV\Keil\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h(330): note: passing argument to parameter here
+extern _ARMABI void free(void * /*ptr*/);
+                                       ^
+../Src/main.c(196): warning: assigning to 'void *' from 'volatile void *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        cb->head = cb->buffer;
+                 ^ ~~~~~~~~~~
+../Src/main.c(208): warning: assigning to 'void *' from 'volatile void *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        cb->head = cb->buffer;
+                 ^ ~~~~~~~~~~
+../Src/main.c(220): warning: assigning to 'void *' from 'volatile void *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        cb->tail = cb->buffer;
+                 ^ ~~~~~~~~~~
+6 warnings generated.
+compiling main.c...
+linking...
+Program Size: Code=7696 RO-data=292 RW-data=12 ZI-data=1788  
+FromELF: creating hex file...
+"efeed_usart_sub_master\efeed_usart_sub_master.axf" - 0 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +82,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
