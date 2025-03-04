@@ -641,8 +641,8 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  LL_FLASH_SetLatency(LL_FLASH_LATENCY_1);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_1)
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
+  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_2)
   {
   }
   LL_RCC_HSE_Enable();
@@ -652,7 +652,7 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_4);
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_1, LL_RCC_PLL_MUL_9);
   LL_RCC_PLL_Enable();
 
    /* Wait till PLL is ready */
@@ -670,8 +670,8 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(32000000);
-  LL_SetSystemCoreClock(32000000);
+  LL_Init1msTick(72000000);
+  LL_SetSystemCoreClock(72000000);
 }
 
 /**
@@ -1037,7 +1037,7 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 1 */
 
   /* USER CODE END USART2_Init 1 */
-  USART_InitStruct.BaudRate = 921600;// 115200;
+  USART_InitStruct.BaudRate = 921600;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
@@ -1094,7 +1094,7 @@ static void MX_USART3_UART_Init(void)
   /* USER CODE BEGIN USART3_Init 1 */
 
   /* USER CODE END USART3_Init 1 */
-  USART_InitStruct.BaudRate = 115200; //921600; //
+  USART_InitStruct.BaudRate = 115200;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
